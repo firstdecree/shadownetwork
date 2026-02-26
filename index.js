@@ -201,7 +201,7 @@
 
         // Core
         const userContacts = await contacts.find({ username: SHA512(cookieData.username) }).toArray()
-        const decryptedContacts = userContacts.map(c => decryptContact(cookieData.username, c))
+        const decryptedContacts = userContacts.map(c => decryptContact(cookieData.password, c))
         res.render("dashboard", { user: cookieData, contacts: decryptedContacts })
     })
 
@@ -212,7 +212,7 @@
 
         // Core
         const userContacts = await contacts.find({ username: SHA512(cookieData.username) }).toArray()
-        const decryptedContacts = userContacts.map(c => decryptContact(cookieData.username, c))
+        const decryptedContacts = userContacts.map(c => decryptContact(cookieData.password, c))
         res.render("contacts", { user: cookieData, contacts: decryptedContacts })
     })
 
