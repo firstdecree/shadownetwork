@@ -1,0 +1,14 @@
+[web]
+port = 8080
+
+[security]
+cookieMasterKey = "" # The master key for the cookie. The more complex it is, the better
+cookieEncoding = "hex" # hex, base64, latin1
+cookiePBKDF2Iterations = 20000 # The PBKDF2Iterations for the cookie encryption.
+cookieSaltLength = 32 # The length of the cookie salt.
+
+[database] # MongoDB
+clusterURL = "" # The database cluster URI.
+databaseName = "" # The name of the database where the collections reside.
+usersCollectionName = "shadownetwork.users" # The collection name where users are stored.
+contactsCollectionName = "shadownetwork.contacts" # The collection name where contacts are stored.

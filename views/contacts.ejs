@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowNetwork</title>
+    <link rel="canonical" href="https://shadownetwork.vercel.app/">
+    <meta property="og:url" content="https://shadownetwork.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ShadowNetwork">
+    <meta property="og:title" content="ShadowNetwork">
+    <meta property="og:description" content="Store your contacts securely and indefinitely with ease and convenience.">
+    <meta property="og:image" content="/assets/img/logo.png">
+    <link rel="icon" href="assets/img/logo.png" type="image/png">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Store your contacts securely and indefinitely with ease and convenience.">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --sidebar-bg: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #8a8f98;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --accent: #ffffff;
+            --accent-hover: #e2e8f0;
+            --danger: #ff4d4f;
+            --glow: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --nav-height: 60px;
+            --sidebar-width: 220px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: var(--nav-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar-left:hover {
+            opacity: 0.8;
+        }
+
+        .navbar-logo {
+            width: 20px;
+            height: 20px;
+            color: #fff;
+        }
+
+        .navbar-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+        }
+
+
+        .profile-menu-container {
+            position: relative;
+        }
+
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-color);
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #333 0%, #111 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-name {
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .chevron-icon {
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 200px;
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 101;
+        }
+
+        .profile-menu-container.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger);
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(255, 77, 79, 0.1);
+        }
+
+        .dropdown-item svg {
+            width: 16px;
+            height: 16px;
+        }
+
+
+        .app-layout {
+            display: flex;
+            flex: 1;
+            margin-top: var(--nav-height);
+            height: calc(100vh - var(--nav-height));
+            overflow: hidden;
+        }
+
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            height: calc(100vh - var(--nav-height));
+            position: fixed;
+            left: 0;
+            top: var(--nav-height);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 0.75rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 60%;
+            width: 3px;
+            background: var(--text-primary);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+
+        .contacts-layout {
+            display: flex;
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            height: 100%;
+            overflow: hidden;
+        }
+
+
+        .contacts-sidebar {
+            width: 350px;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.01);
+            flex-shrink: 0;
+        }
+
+        .contacts-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .contacts-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .btn-add {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-hover);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .btn-add:hover {
+            background: var(--text-primary);
+            color: var(--bg-color);
+            transform: translateY(-1px);
+        }
+
+        .contacts-list-container {
+            flex: 1;
+            overflow-y: auto;
+            min-height: 0;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+
+        .contacts-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .contacts-list-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .contacts-list-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .contacts-list-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-item {
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid transparent;
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .contact-item:hover,
+        .contact-item.active {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--border-color);
+        }
+
+        .contact-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            flex-shrink: 0;
+            text-transform: uppercase;
+        }
+
+        .contact-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .contact-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        .contacts-main {
+            flex: 1;
+            background: var(--bg-color);
+            position: relative;
+            overflow-y: auto;
+        }
+
+
+        .view-panel {
+            display: none;
+            padding: 4rem;
+            animation: fadeIn 0.4s ease forwards;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .view-panel.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+
+        .form-section {
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: #000000;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <nav class="navbar">
+        <a href="/" class="navbar-left">
+            <svg class="navbar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                </path>
+            </svg>
+            <span class="navbar-title">ShadowNetwork</span>
+        </a>
+
+        <div class="navbar-right">
+            <div class="profile-menu-container" id="profileMenu">
+                <button class="profile-btn" aria-haspopup="true" aria-expanded="false"
+                    onclick="toggleProfileMenu(event)">
+                    <div class="profile-avatar">
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <span class="profile-name">
+                        <%= user.username %>
+                    </span>
+                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+
+                <div class="dropdown-menu">
+                    <a href="/logout" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </a>
+                    <a href="/delete-account" class="dropdown-item danger">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                        </svg>
+                        Delete Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="app-layout">
+
+
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="9"></rect>
+                            <rect x="14" y="3" width="7" height="5"></rect>
+                            <rect x="14" y="12" width="7" height="9"></rect>
+                            <rect x="3" y="16" width="7" height="5"></rect>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="/contacts" class="sidebar-link active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Contacts
+                    </a>
+                </li>
+                <li>
+                    <a href="/graph" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Network Graph
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+
+        <div class="contacts-layout">
+
+
+            <div class="contacts-sidebar">
+                <div class="contacts-header">
+                    <span class="contacts-title">Your Network</span>
+                    <button class="btn-add" onclick="openAddPanel()" title="Add New Contact">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="contacts-list-container">
+                    <% if (contacts && contacts.length> 0) { %>
+                        <% contacts.forEach(function(contact) { %>
+                            <div class="contact-item" data-contact="<%= encodeURIComponent(JSON.stringify(contact)) %>"
+                                onclick="showPanel('view-contact-panel', this.dataset.contact)">
+                                <div class="contact-avatar">
+                                    <%= contact.alias.charAt(0).toUpperCase() %>
+                                </div>
+                                <div class="contact-info">
+                                    <div class="contact-name">
+                                        <%= contact.alias %>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% } else { %>
+                                    <div
+                                        style="padding: 1rem; color: var(--text-secondary); font-size: 0.85rem; text-align: center;">
+                                        No contacts connected yet.
+                                    </div>
+                                    <% } %>
+                </div>
+            </div>
+
+
+            <div class="contacts-main">
+
+
+                <div id="default-panel" class="view-panel active">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                        </svg>
+                        <h2>Select a Contact</h2>
+                        <p style="margin-top: 0.5rem; max-width: 300px;">Choose a contact from the list to view their
+                            secure profile, or click the plus button to securely add a new network connection.</p>
+                    </div>
+                </div>
+
+
+                <div id="add-contact-panel" class="view-panel">
+                    <div class="form-section">
+                        <h2 class="section-title" id="form-panel-title">New Connection</h2>
+                        <form id="add-contact-form">
+                            <input type="hidden" id="edit-contact-id" value="">
+                            <div class="form-group">
+                                <label class="form-label">Alias / Name</label>
+                                <input type="text" id="new-contact-alias" class="form-input"
+                                    placeholder="Enter contact name" maxlength="25" required>
+                            </div>
+
+                            <div class="form-group">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <label class="form-label" style="margin-bottom: 0;">Contacts</label>
+                                    <button type="button" class="btn-add" style="width: 24px; height: 24px;"
+                                        onclick="addContactRow()" title="Add Another Contact Method">
+                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div id="dynamic-contacts-container"
+                                    style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                    <div class="contact-row" style="display: flex; gap: 0.5rem;">
+                                        <input type="text" class="form-input source-input" style="flex: 1;"
+                                            placeholder="Source (e.g. Email)" maxlength="20" required>
+                                        <input type="text" class="form-input contact-input" style="flex: 2;"
+                                            placeholder="Contact (e.g. user@shadow.net)" maxlength="60" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                    <label class="form-label" style="margin-bottom: 0;">Relations</label>
+                                    <button type="button" class="btn-add" style="width: 24px; height: 24px;"
+                                        onclick="addRelationRow()" title="Add Another Relation">
+                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div id="dynamic-relations-container"
+                                    style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                    <div class="relation-row" style="display: flex; gap: 0.5rem;">
+                                        <select class="form-input relation-contact-input" style="flex: 2;">
+                                            <option value="">Select Existing Contact</option>
+                                            <% if (contacts && contacts.length> 0) { %>
+                                                <% contacts.forEach(function(c) { %>
+                                                    <option value="<%= c.alias %>">
+                                                        <%= c.alias %>
+                                                    </option>
+                                                    <% }); %>
+                                                        <% } %>
+                                        </select>
+                                        <input type="text" class="form-input relation-label-input" style="flex: 1;"
+                                            placeholder="Label (e.g. Friend)" maxlength="14">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Public Key (Optional)</label>
+                                <textarea id="new-contact-pubkey" class="form-input" rows="4"
+                                    placeholder="PGP Public Key Block..." maxlength="5200"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Note</label>
+                                <textarea id="new-contact-note" class="form-input" rows="2"
+                                    placeholder="Add a private note..." maxlength="1000"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary" id="form-submit-btn">Encrypt & Save
+                                Contact</button>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div id="view-contact-panel" class="view-panel">
+                    <div class="form-section">
+                        <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 3rem;">
+                            <div class="contact-avatar" style="width: 80px; height: 80px; font-size: 2rem;"
+                                id="detail-avatar">?</div>
+                            <div style="flex: 1;">
+                                <h2 class="section-title" style="margin-bottom: 0.5rem; margin-top: 0;"
+                                    id="detail-name">Unknown</h2>
+                                <p style="color: var(--text-secondary); font-size: 0.8rem;" id="detail-date"></p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 0;">
+                                <button class="btn-primary" onclick="openEditPanel()"
+                                    style="width: auto; padding: 0.5rem 1rem; margin: 0;">Edit</button>
+                                <button class="btn-primary" onclick="deleteContact()"
+                                    style="width: auto; padding: 0.5rem 1rem; margin: 0; background: rgba(255, 77, 79, 0.1); border-color: rgba(255, 77, 79, 0.2); color: #ff4d4f;">Delete</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Contact Alias</label>
+                            <div class="form-input" style="background: rgba(255,255,255,0.02); pointer-events: none;"
+                                id="detail-view-name">Unknown</div>
+                        </div>
+
+                        <h3
+                            style="font-size: 1rem; font-weight: 500; color: var(--text-primary); margin: 2rem 0 1rem 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                            Connections</h3>
+                        <div id="detail-connections-container"></div>
+
+                        <h3
+                            style="font-size: 1rem; font-weight: 500; color: var(--text-primary); margin: 2rem 0 1rem 0; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                            Relations</h3>
+                        <div id="detail-relations-container"></div>
+
+                        <div class="form-group" id="detail-pubkey-group" style="display: none; margin-top: 2rem;">
+                            <label class="form-label">Public Key</label>
+                            <textarea class="form-input"
+                                style="background: rgba(255,255,255,0.02); pointer-events: none; resize: none;" rows="4"
+                                id="detail-view-pubkey" readonly></textarea>
+                        </div>
+
+                        <div class="form-group" id="detail-note-group" style="display: none;">
+                            <label class="form-label">Note</label>
+                            <textarea class="form-input"
+                                style="background: rgba(255,255,255,0.02); pointer-events: none; resize: none;" rows="2"
+                                id="detail-view-note" readonly></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentContact = null
+
+        function toggleProfileMenu(e) {
+            e.stopPropagation()
+            const container = document.getElementById("profileMenu")
+            const btn = container.querySelector(".profile-btn")
+            const isActive = container.classList.contains("active")
+
+            if (isActive) {
+                container.classList.remove("active")
+                btn.setAttribute("aria-expanded", "false")
+            } else {
+                container.classList.add("active")
+                btn.setAttribute("aria-expanded", "true")
+            }
+        }
+
+        document.addEventListener("click", function (e) {
+            const container = document.getElementById("profileMenu")
+            if (container && !container.contains(e.target) && container.classList.contains("active")) {
+                container.classList.remove("active")
+                container.querySelector(".profile-btn").setAttribute("aria-expanded", "false")
+            }
+        })
+
+        function showPanel(panelId, contactData) {
+            document.querySelectorAll(".view-panel").forEach(p => {
+                p.classList.remove("active")
+            })
+
+            document.querySelectorAll(".contact-item").forEach(el => {
+                el.classList.remove("active")
+            })
+
+            const targetPanel = document.getElementById(panelId)
+            if (targetPanel) {
+                void targetPanel.offsetWidth
+                targetPanel.classList.add("active")
+            }
+
+            if (panelId === "view-contact-panel" && contactData) {
+                try {
+                    const contact = JSON.parse(decodeURIComponent(contactData))
+                    currentContact = contact
+                    document.getElementById("detail-avatar").innerText = contact.alias.charAt(0).toUpperCase()
+                    document.getElementById("detail-name").innerText = contact.alias
+                    document.getElementById("detail-view-name").innerText = contact.alias
+
+                    if (contact.createdAt) {
+                        document.getElementById("detail-date").innerText = "Added: " + new Date(contact.createdAt).toLocaleDateString()
+                    } else {
+                        document.getElementById("detail-date").innerText = ""
+                    }
+
+                    const connContainer = document.getElementById("detail-connections-container")
+                    connContainer.innerHTML = ""
+                    if (contact.connections && contact.connections.length > 0) {
+                        contact.connections.forEach(conn => {
+                            connContainer.innerHTML += `
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label class="form-label" style="font-size: 0.75rem;">${conn.source}</label>
+                                    <div class="form-input" style="background: rgba(255,255,255,0.02); pointer-events: none;">${conn.contact}</div>
+                                </div>
+                            `
+                        })
+                    } else {
+                        connContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">No connections available.</p>'
+                    }
+
+                    const relContainer = document.getElementById("detail-relations-container")
+                    relContainer.innerHTML = ""
+                    if (contact.relations && contact.relations.length > 0) {
+                        let hasVal = false
+                        contact.relations.forEach(rel => {
+                            if (!rel.contact || rel.contact === "") return
+                            hasVal = true
+                            relContainer.innerHTML += `
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label class="form-label" style="font-size: 0.75rem;">${rel.label || "Connected To"}</label>
+                                    <div class="form-input" style="background: rgba(0,255,128,0.05); color: #00ff80; border: 1px solid rgba(0,255,128,0.2); pointer-events: none; font-weight: 500;">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 0.5rem;">
+                                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="8.5" cy="7" r="4"></circle>
+                                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                                        </svg>
+                                        ${rel.contact}
+                                    </div>
+                                </div>
+                            `
+                        })
+                        if (!hasVal) relContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">No relations established.</p>'
+                    } else {
+                        relContainer.innerHTML = '<p style="color: var(--text-secondary); font-size: 0.85rem;">No relations established.</p>'
+                    }
+
+                    const pubKeyGroup = document.getElementById("detail-pubkey-group")
+                    const noteGroup = document.getElementById("detail-note-group")
+
+                    if (contact.publicKey && contact.publicKey.trim() !== "") {
+                        pubKeyGroup.style.display = "block"
+                        document.getElementById("detail-view-pubkey").value = contact.publicKey
+                    } else {
+                        pubKeyGroup.style.display = "none"
+                    }
+
+                    if (contact.note && contact.note.trim() !== "") {
+                        noteGroup.style.display = "block"
+                        document.getElementById("detail-view-note").value = contact.note
+                    } else {
+                        noteGroup.style.display = "none"
+                    }
+
+                    const items = document.querySelectorAll(".contact-item")
+                    items.forEach(item => {
+                        const name = item.querySelector(".contact-name").innerText
+                        if (name === contact.alias) item.classList.add("active")
+                    })
+                } catch (e) { console.error("Error parsing contact", e) }
+            }
+        }
+
+        function openAddPanel() {
+            document.getElementById("form-panel-title").innerText = "New Connection"
+            document.getElementById("form-submit-btn").innerText = "Encrypt & Save Contact"
+            document.getElementById("add-contact-form").reset()
+            document.getElementById("edit-contact-id").value = ""
+
+            document.getElementById("dynamic-contacts-container").innerHTML = `
+                <div class="contact-row" style="display: flex; gap: 0.5rem;">
+                    <input type="text" class="form-input source-input" style="flex: 1;" placeholder="Source (e.g. Email)" maxlength="20" required>
+                    <input type="text" class="form-input contact-input" style="flex: 2;" placeholder="Contact (e.g. user@shadow.net)" maxlength="60" required>
+                </div>
+            `
+            document.getElementById("dynamic-relations-container").innerHTML = `
+                <div class="relation-row" style="display: flex; gap: 0.5rem;">
+                    <select class="form-input relation-contact-input" style="flex: 2;">
+                        <option value="">Select Existing Contact</option>
+                        <% if (contacts && contacts.length > 0) { %>
+                            <% contacts.forEach(function(c) { %>
+                                <option value="<%= c.alias %>"><%= c.alias %></option>
+                            <% }); %>
+                        <% } %>
+                    </select>
+                    <input type="text" class="form-input relation-label-input" style="flex: 1;" placeholder="Label (e.g. Friend)" maxlength="14">
+                </div>
+            `
+            showPanel("add-contact-panel")
+            updateRelationSelects()
+        }
+
+        function openEditPanel() {
+            if (!currentContact) return
+            document.getElementById("form-panel-title").innerText = "Edit Connection"
+            document.getElementById("form-submit-btn").innerText = "Encrypt & Update Contact"
+            document.getElementById("edit-contact-id").value = currentContact._id
+
+            document.getElementById("new-contact-alias").value = currentContact.alias || ""
+            document.getElementById("new-contact-pubkey").value = currentContact.publicKey || ""
+            document.getElementById("new-contact-note").value = currentContact.note || ""
+
+            const connContainer = document.getElementById("dynamic-contacts-container")
+            connContainer.innerHTML = ""
+            if (currentContact.connections && currentContact.connections.length > 0) {
+                currentContact.connections.forEach(conn => {
+                    addContactRow(conn.source, conn.contact)
+                })
+            } else {
+                addContactRow()
+            }
+
+            const relContainer = document.getElementById("dynamic-relations-container")
+            relContainer.innerHTML = ""
+            if (currentContact.relations && currentContact.relations.length > 0) {
+                currentContact.relations.forEach(rel => {
+                    addRelationRow(rel.contact, rel.label)
+                })
+            } else {
+                addRelationRow()
+            }
+
+            showPanel("add-contact-panel")
+            updateRelationSelects()
+        }
+
+        async function deleteContact() {
+            if (!currentContact || !currentContact._id) return
+
+            if (confirm(`Are you sure you want to delete ${currentContact.alias}? This action cannot be undone.`)) {
+                try {
+                    const response = await fetch(`/api/contacts/${currentContact._id}`, {
+                        method: "DELETE"
+                    })
+
+                    if (await response.text() === "1") {
+                        window.location.reload()
+                    } else {
+                        alert("Error deleting contact")
+                    }
+                } catch (err) {
+                    console.error(err)
+                    alert("Connection error")
+                }
+            }
+        }
+
+        function addContactRow(sourceVal = "", contactVal = "") {
+            const container = document.getElementById("dynamic-contacts-container")
+            const row = document.createElement("div")
+            row.className = "contact-row"
+            row.style.cssText = "display: flex; gap: 0.5rem; animation: fadeIn 0.3s ease;"
+            row.innerHTML = `
+                <input type="text" class="form-input source-input" style="flex: 1;" placeholder="Source (e.g. Signal)" value="${sourceVal}" maxlength="20" required>
+                <input type="text" class="form-input contact-input" style="flex: 2;" placeholder="Contact" value="${contactVal}" maxlength="60" required>
+                <button type="button" class="btn-add" style="width: 44px; height: 44px; flex-shrink: 0; background: rgba(255, 77, 79, 0.1); border-color: rgba(255, 77, 79, 0.2); color: #ff4d4f;" onclick="this.parentElement.remove()" title="Remove">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            `
+            container.appendChild(row)
+        }
+
+        function addRelationRow(contactVal = "", labelVal = "") {
+            const container = document.getElementById("dynamic-relations-container")
+            const row = document.createElement("div")
+            row.className = "relation-row"
+            row.style.cssText = "display: flex; gap: 0.5rem; animation: fadeIn 0.3s ease;"
+            const selectHTML = `
+                <select class="form-input relation-contact-input" style="flex: 2;">
+                    <option value="">Select Existing Contact</option>
+                    <% if (contacts && contacts.length > 0) { %>
+                        <% contacts.forEach(function(c) { %>
+                            <option value="<%= c.alias %>"><%= c.alias %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+            `
+            row.innerHTML = `
+                ${selectHTML}
+                <input type="text" class="form-input relation-label-input" style="flex: 1;" placeholder="Label (e.g. Friend)" value="${labelVal}" maxlength="14">
+                <button type="button" class="btn-add" style="width: 44px; height: 44px; flex-shrink: 0; background: rgba(255, 77, 79, 0.1); border-color: rgba(255, 77, 79, 0.2); color: #ff4d4f;" onclick="this.parentElement.remove()" title="Remove">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            `
+            if (contactVal) {
+                const selectElement = row.querySelector("select")
+                selectElement.value = contactVal
+            }
+            container.appendChild(row)
+            updateRelationSelects()
+        }
+
+        function updateRelationSelects() {
+            const aliasInput = document.getElementById("new-contact-alias")
+            if (!aliasInput) return
+            const alias = aliasInput.value
+
+            const selects = document.querySelectorAll(".relation-contact-input")
+            const selectedValues = Array.from(selects).map(s => s.value).filter(val => val !== "")
+
+            selects.forEach(select => {
+                const currentVal = select.value
+                Array.from(select.options).forEach(opt => {
+                    const optVal = opt.value
+
+                    if (optVal === alias && alias !== "") {
+                        opt.style.display = "none"
+                        opt.disabled = true
+                        if (currentVal === alias) select.value = ""
+                    } else if (optVal !== "" && selectedValues.includes(optVal) && currentVal !== optVal) {
+                        opt.style.display = "none"
+                        opt.disabled = true
+                    } else if (optVal !== "") {
+                        opt.style.display = ""
+                        opt.disabled = false
+                    }
+                })
+            })
+        }
+
+        document.getElementById("dynamic-relations-container").addEventListener("change", (e) => {
+            if (e.target && e.target.classList.contains("relation-contact-input")) {
+                updateRelationSelects()
+            }
+        })
+
+        document.getElementById("dynamic-relations-container").addEventListener("click", (e) => {
+            setTimeout(updateRelationSelects, 50)
+        })
+
+        document.getElementById("new-contact-alias").addEventListener("input", updateRelationSelects)
+
+        document.getElementById("add-contact-form").addEventListener("submit", async (e) => {
+            e.preventDefault()
+            const alias = document.getElementById("new-contact-alias").value
+            const publicKey = document.getElementById("new-contact-pubkey").value
+            const note = document.getElementById("new-contact-note").value
+
+            const connections = []
+            const rows = document.querySelectorAll(".contact-row")
+            rows.forEach(row => {
+                const source = row.querySelector(".source-input").value
+                const contactValue = row.querySelector(".contact-input").value
+                if (source || contactValue) connections.push({ source, contact: contactValue })
+            })
+
+            const relations = []
+            const relRows = document.querySelectorAll(".relation-row")
+            relRows.forEach(row => {
+                const contactValue = row.querySelector(".relation-contact-input").value
+                const label = row.querySelector(".relation-label-input").value
+                if (contactValue && contactValue !== alias) {
+                    if (!relations.find(r => r.contact === contactValue)) {
+                        relations.push({ contact: contactValue, label })
+                    }
+                } else if (contactValue === alias) {
+                    alert("You cannot add a contact as a relationship to itself.")
+                }
+            })
+
+            const editId = document.getElementById("edit-contact-id").value
+            const url = editId ? `/api/contacts/${editId}` : "/api/contacts"
+            const method = editId ? "PUT" : "POST"
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ alias, connections, relations, publicKey, note })
+                })
+
+                if (await response.text() === "1") {
+                    window.location.reload()
+                } else {
+                    alert("Error saving contact")
+                }
+            } catch (err) {
+                console.error(err)
+                alert("Connection error")
+            }
+        })
+    </script>
+</body>
+
+</html>

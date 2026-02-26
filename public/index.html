@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowNetwork</title>
+    <link rel="canonical" href="https://shadownetwork.vercel.app/">
+    <meta property="og:url" content="https://shadownetwork.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ShadowNetwork">
+    <meta property="og:title" content="ShadowNetwork">
+    <meta property="og:description" content="Store your contacts securely and indefinitely with ease and convenience.">
+    <meta property="og:image" content="/assets/img/logo.png">
+    <link rel="icon" href="assets/img/logo.png" type="image/png">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Store your contacts securely and indefinitely with ease and convenience.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-primary: #ffffff;
+            --text-secondary: #8a8f98;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --accent: #e2e8f0;
+            --glow: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar-left:hover {
+            opacity: 0.8;
+        }
+
+        .navbar-logo {
+            width: 24px;
+            height: 24px;
+            color: #fff;
+        }
+
+        .navbar-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .navbar-right {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            color: #000000;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .hero-btn {
+            padding: 0.875rem 1.75rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            width: fit-content;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            min-height: 100vh;
+            padding-top: 5rem;
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            color: #FFFFFF;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 480px;
+            line-height: 1.6;
+        }
+
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .globe-container {
+            position: relative;
+            width: 450px;
+            height: 450px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1000px;
+        }
+
+        .globe {
+            width: 100%;
+            height: 100%;
+            animation: spin 20s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .globe svg {
+            width: 100%;
+            height: 100%;
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.7);
+            stroke-width: 1.5;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
+            overflow: visible;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg) rotateX(15deg);
+            }
+
+            to {
+                transform: rotate(360deg) rotateX(15deg);
+            }
+        }
+
+        .why-section {
+            padding: 8rem 0;
+            position: relative;
+        }
+
+        .why-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .why-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+        }
+
+        .why-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .cards-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 40px rgba(255, 255, 255, 0.05);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .card-icon svg {
+            width: 24px;
+            height: 24px;
+            color: #fff;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .card-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .footer {
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+                padding-top: 8rem;
+                min-height: auto;
+                padding-bottom: 4rem;
+            }
+
+            .hero-content {
+                align-items: center;
+            }
+
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .cards-grid,
+            .cards-grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .globe-container {
+                width: 320px;
+                height: 320px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="navbar-left">
+            <svg class="navbar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                </path>
+            </svg>
+            <span class="navbar-title">ShadowNetwork</span>
+        </a>
+        <div class="navbar-right" style="align-items: center;">
+            <a href="/" class="nav-link">Home</a>
+            <a href="https://github.com/firstdecree/shadownetwork" class="nav-link">Github</a>
+            <a href="https://dsc.gg/firstdecree" class="nav-link">Community</a>
+            <a href="/login" class="btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">ShadowNetwork</h1>
+                <p class="hero-subtitle">Store your contacts securely and indefinitely with ease and convenience.</p>
+                <a href="/login" class="btn-primary hero-btn">Get Started</a>
+            </div>
+            <div class="hero-visual">
+                <div class="globe-container">
+                    <div class="globe">
+                        <svg viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="48" fill="url(#glow)" />
+
+                            <circle cx="50" cy="50" r="48" stroke="rgba(255,255,255,0.5)" stroke-width="0.8" />
+                            <circle cx="50" cy="50" r="44" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"
+                                stroke-dasharray="2 3" />
+
+                            <ellipse cx="50" cy="50" rx="12" ry="48" stroke="rgba(255,255,255,0.4)"
+                                stroke-width="0.5" />
+                            <ellipse cx="50" cy="50" rx="26" ry="48" stroke="rgba(255,255,255,0.4)"
+                                stroke-width="0.5" />
+                            <ellipse cx="50" cy="50" rx="38" ry="48" stroke="rgba(255,255,255,0.4)"
+                                stroke-width="0.5" />
+                            <line x1="50" y1="2" x2="50" y2="98" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" />
+
+                            <ellipse cx="50" cy="50" rx="48" ry="12" stroke="rgba(255,255,255,0.4)"
+                                stroke-width="0.5" />
+                            <ellipse cx="50" cy="50" rx="48" ry="26" stroke="rgba(255,255,255,0.4)"
+                                stroke-width="0.5" />
+                            <ellipse cx="50" cy="50" rx="48" ry="38" stroke="rgba(255,255,255,0.4)"
+                                stroke-width="0.5" />
+                            <line x1="2" y1="50" x2="98" y2="50" stroke="rgba(255,255,255,0.4)" stroke-width="0.5" />
+
+                            <circle cx="35" cy="20" r="1.5" fill="#fff" />
+                            <circle cx="65" cy="80" r="1.5" fill="#fff" />
+                            <circle cx="85" cy="35" r="1.5" fill="#fff" />
+                            <circle cx="15" cy="65" r="1.5" fill="#fff" />
+                            <circle cx="50" cy="50" r="2" fill="#fff" />
+
+                            <defs>
+                                <radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="30%" fy="30%">
+                                    <stop offset="0%" stop-color="rgba(255,255,255,0.1)" />
+                                    <stop offset="100%" stop-color="rgba(0,0,0,0)" />
+                                </radialGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="why-section" style="padding-bottom: 2rem;">
+            <div class="why-header" style="margin-bottom: 3rem;">
+                <h2 class="why-title" style="font-size: 2rem;">What and Why</h2>
+                <p class="why-subtitle">Understanding the core mission of ShadowNetwork.</p>
+            </div>
+
+            <div class="cards-grid-2">
+                <div class="card">
+                    <h3 class="card-title">What is ShadowNetwork?</h3>
+                    <p class="card-text">ShadowNetwork is a privacy-focused, zero-knowledge platform designed to
+                        securely and effortlessly store your contacts. With ShadoWnetwork, you can store and connect
+                        your contacts with ease.</p>
+                </div>
+
+                <div class="card">
+                    <h3 class="card-title">Why use it?</h3>
+                    <p class="card-text">ShadowNetwork is open-source and privacy-focused, designed for ease of use. You
+                        only need a username and password to get started, making it simple to access your account
+                        without the risk of forgetting complex credentials.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="why-section" style="padding-top: 4rem;">
+            <div class="why-header">
+                <h2 class="why-title">Why ShadowNetwork?</h2>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Ultimate Security</h3>
+                    <p class="card-text">We follow a zero-knowledge, privacy-focused policy, ensuring that only you can
+                        access your data. We use advanced encryption to guarantee its security.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Open-Source</h3>
+                    <p class="card-text">Our entire platform is open-source. Anyone can verify our encryption methods,
+                        review the code for vulnerabilities, and contribute to our platform's transparency and security.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h3 class="card-title">Indefinite Retention</h3>
+                    <p class="card-text">Never lose a contact again. Our backup system and resilient data storage ensure
+                        your network remains secure and accessible for a lifetime. However, we cannot guarantee 100%
+                        protection as human error is always a possibility.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Made with <span style="color: #e25555;">&hearts;</span> by <a href="https://firstdecree.org/" target="_blank"
+                style="color: var(--text-primary); text-decoration: none; font-weight: 500;">The First Decree</a></p>
+    </footer>
+
+</body>
+
+</html>

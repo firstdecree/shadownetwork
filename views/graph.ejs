@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadowNetwork</title>
+    <link rel="canonical" href="https://shadownetwork.vercel.app/">
+    <meta property="og:url" content="https://shadownetwork.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ShadowNetwork">
+    <meta property="og:title" content="ShadowNetwork">
+    <meta property="og:description" content="Store your contacts securely and indefinitely with ease and convenience.">
+    <meta property="og:image" content="/assets/img/logo.png">
+    <link rel="icon" href="assets/img/logo.png" type="image/png">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Store your contacts securely and indefinitely with ease and convenience.">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --sidebar-bg: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: #8a8f98;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --accent: #ffffff;
+            --accent-hover: #e2e8f0;
+            --danger: #ff4d4f;
+            --danger-hover: #ff7875;
+            --glow: rgba(255, 255, 255, 0.05);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --nav-height: 60px;
+            --sidebar-width: 220px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            height: var(--nav-height);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .navbar-left:hover {
+            opacity: 0.8;
+        }
+
+        .navbar-logo {
+            width: 20px;
+            height: 20px;
+            color: #fff;
+        }
+
+        .navbar-title {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+        }
+
+
+        .profile-menu-container {
+            position: relative;
+        }
+
+        .profile-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .profile-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-color);
+        }
+
+        .profile-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #333 0%, #111 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-name {
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .chevron-icon {
+            width: 16px;
+            height: 16px;
+            color: var(--text-secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .profile-btn[aria-expanded="true"] .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            width: 200px;
+            background: #0a0a0a;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 101;
+        }
+
+        .profile-menu-container.active .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown-item.danger {
+            color: var(--danger);
+        }
+
+        .dropdown-item.danger:hover {
+            background: rgba(255, 77, 79, 0.1);
+        }
+
+        .dropdown-item svg {
+            width: 16px;
+            height: 16px;
+        }
+
+
+        .app-layout {
+            display: flex;
+            flex: 1;
+            margin-top: var(--nav-height);
+        }
+
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            height: calc(100vh - var(--nav-height));
+            position: fixed;
+            left: 0;
+            top: var(--nav-height);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 0.75rem;
+            z-index: 10;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 60%;
+            width: 3px;
+            background: var(--text-primary);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .sidebar-link svg {
+            width: 16px;
+            height: 16px;
+        }
+
+
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-header {
+            padding: 2rem 2.5rem 1rem;
+            animation: fadeIn 0.8s ease forwards;
+            opacity: 0;
+            border-bottom: 1px solid var(--border-color);
+            z-index: 5;
+            background: var(--bg-color);
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+
+        #graph-canvas {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at center, rgba(30, 30, 30, 0.4) 0%, var(--bg-color) 100%);
+            cursor: grab;
+        }
+
+        #graph-canvas:active {
+            cursor: grabbing;
+        }
+
+        #graph-world {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: 0 0;
+        }
+
+        .node-bubble {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            transition: box-shadow 0.2s ease, transform 0.1s;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .node-bubble:hover {
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .node-center {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 255, 128, 0.15);
+            border: 2px solid rgba(0, 255, 128, 0.6);
+            color: #00ff80;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(0, 255, 128, 0.2);
+            z-index: 20;
+        }
+
+        .node-contact {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .node-contact:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(0, 255, 128, 0.5);
+            transform: translate(-50%, -50%) scale(1.05);
+            z-index: 30;
+        }
+
+        .node-alias {
+            word-break: break-word;
+            line-height: 1.1;
+        }
+
+        .node-initial {
+            font-size: 1.25rem;
+            opacity: 0.5;
+        }
+
+        #graph-edges {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        line.edge {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1.5px;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+
+        .details-sidebar {
+            position: absolute;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-left: 1px solid var(--border-color);
+            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .details-sidebar.active {
+            right: 0;
+        }
+
+        .details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .detail-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-value {
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <nav class="navbar">
+        <a href="/" class="navbar-left">
+            <svg class="navbar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                </path>
+            </svg>
+            <span class="navbar-title">ShadowNetwork</span>
+        </a>
+
+        <div class="navbar-right">
+            <div class="profile-menu-container" id="profileMenu">
+                <button class="profile-btn" aria-haspopup="true" aria-expanded="false"
+                    onclick="toggleProfileMenu(event)">
+                    <div class="profile-avatar">
+                        <%= user.username.charAt(0).toUpperCase() %>
+                    </div>
+                    <span class="profile-name">
+                        <%= user.username %>
+                    </span>
+                    <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+
+                <div class="dropdown-menu">
+                    <a href="/logout" class="dropdown-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Logout
+                    </a>
+                    <a href="/delete-account" class="dropdown-item danger">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                            </path>
+                        </svg>
+                        Delete Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="app-layout">
+
+
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="/dashboard" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="9"></rect>
+                            <rect x="14" y="3" width="7" height="5"></rect>
+                            <rect x="14" y="12" width="7" height="9"></rect>
+                            <rect x="3" y="16" width="7" height="5"></rect>
+                        </svg>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="/contacts" class="sidebar-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        Contacts
+                    </a>
+                </li>
+                <li>
+                    <a href="/graph" class="sidebar-link active">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Network Graph
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Contacts Graph</h1>
+                <p class="page-subtitle">The network graph of your contacts.</p>
+            </div>
+
+            <div id="graph-canvas">
+                <div id="graph-world">
+                    <svg id="graph-edges"></svg>
+
+                </div>
+            </div>
+
+
+            <div id="node-details" class="details-sidebar">
+                <div class="details-header">
+                    <h2 class="page-title" style="margin: 0; font-size: 1.25rem;">Contact Details</h2>
+                    <button class="close-btn" onclick="closeNodeDetails()">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                    <div id="sidebar-avatar"
+                        style="width: 50px; height: 50px; background: rgba(0, 255, 128, 0.1); border: 1px solid rgba(0, 255, 128, 0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #00ff80; font-weight: 600; font-size: 1.2rem;">
+                        ?</div>
+                    <div>
+                        <div id="sidebar-name" style="font-weight: 600; font-size: 1.1rem;">Unknown</div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">PGP Public Key</div>
+                    <div class="detail-value" id="sidebar-pubkey"
+                        style="font-family: monospace; font-size: 0.8rem; opacity: 0.8;">None</div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Connections</div>
+                    <div id="sidebar-connections"></div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Relations</div>
+                    <div id="sidebar-relations"></div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Secure Note</div>
+                    <div class="detail-value" id="sidebar-note">No note attached.</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+
+    <script>
+        let graphData = null;
+    </script>
+
+    <script>
+
+        function toggleProfileMenu(e) {
+            e.stopPropagation()
+            const container = document.getElementById("profileMenu")
+            const btn = container.querySelector(".profile-btn")
+            const isActive = container.classList.contains("active")
+
+            if (isActive) {
+                container.classList.remove("active")
+                btn.setAttribute("aria-expanded", "false")
+            } else {
+                container.classList.add("active")
+                btn.setAttribute("aria-expanded", "true")
+            }
+        }
+
+        document.addEventListener("click", function (e) {
+            const container = document.getElementById("profileMenu")
+            if (container && !container.contains(e.target) && container.classList.contains("active")) {
+                container.classList.remove("active")
+                container.querySelector(".profile-btn").setAttribute("aria-expanded", "false")
+            }
+        })
+
+
+        const canvas = document.getElementById("graph-canvas")
+        const world = document.getElementById("graph-world")
+        const edgesSvg = document.getElementById("graph-edges")
+
+
+        let isDragging = false
+        let startX, startY
+        let transX = 0, transY = 0
+        let scale = 1
+
+        function updateTransform() {
+            world.style.transform = `translate(${transX}px, ${transY}px) scale(${scale})`
+        }
+
+        canvas.addEventListener("mousedown", (e) => {
+            isDragging = true
+            startX = e.clientX - transX
+            startY = e.clientY - transY
+        })
+
+        window.addEventListener("mouseup", () => {
+            isDragging = false
+        })
+
+        window.addEventListener("mousemove", (e) => {
+            if (!isDragging) return
+            transX = e.clientX - startX
+            transY = e.clientY - startY
+            updateTransform()
+        })
+
+
+        canvas.addEventListener("wheel", (e) => {
+            e.preventDefault()
+
+            const zoomSensitivity = 0.0015
+            const delta = -e.deltaY * zoomSensitivity
+
+
+            const newScale = Math.min(Math.max(0.1, scale + delta), 4)
+
+
+            const rect = canvas.getBoundingClientRect()
+            const mouseX = e.clientX - rect.left
+            const mouseY = e.clientY - rect.top
+
+
+            transX = mouseX - (mouseX - transX) * (newScale / scale)
+            transY = mouseY - (mouseY - transY) * (newScale / scale)
+            scale = newScale
+
+            updateTransform()
+        }, { passive: false })
+
+
+        async function fetchAndRenderGraph() {
+            if (!graphData) {
+                try {
+                    const res = await fetch("/api/network-data")
+                    if (res.ok) {
+                        graphData = await res.json()
+                    } else {
+                        console.error("Failed to load network data")
+                        return
+                    }
+                } catch (err) {
+                    console.error("Error fetching network data:", err)
+                    return
+                }
+            }
+            renderGraph()
+        }
+
+        function renderGraph() {
+
+            const rect = canvas.getBoundingClientRect()
+            if (rect.width === 0 || rect.height === 0) {
+                setTimeout(renderGraph, 50)
+                return
+            }
+
+            const centerX = rect.width / 2
+            const centerY = rect.height / 2
+
+
+            let nodesHtml = ""
+            let edgesHtml = `
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="rgba(255, 255, 255, 0.4)" />
+                    </marker>
+                </defs>
+            `
+            let labelsHtml = ""
+
+            const total = graphData.contacts.length
+            const nodePositions = {}
+
+
+            graphData.contacts.forEach((contact, i) => {
+                const goldenRatio = 1.61803398875
+                const angle = i * Math.PI * 2 * goldenRatio
+
+                const radius = 150 + (i * 15)
+
+                const x = centerX + Math.cos(angle) * radius
+                const y = centerY + Math.sin(angle) * radius
+
+                const aliasStr = contact.alias || "Unknown"
+                const initial = aliasStr.charAt(0).toUpperCase()
+
+                nodePositions[aliasStr] = { x, y }
+
+                const encodedData = encodeURIComponent(JSON.stringify(contact))
+
+                nodesHtml += `
+                    <div class="node-bubble node-contact" style="left: ${x}px; top: ${y}px;" title="${aliasStr}" onclick="showNodeDetails('${encodedData}', event)">
+                        <div class="node-initial">${initial}</div>
+                        <div class="node-alias">${aliasStr}</div>
+                    </div>
+                `
+            })
+
+
+            graphData.contacts.forEach((contact) => {
+                if (contact.relations && contact.relations.length > 0) {
+                    contact.relations.forEach(rel => {
+                        const targetAlias = rel.contact
+                        const label = rel.label || "Connected"
+
+                        const sourcePos = nodePositions[contact.alias]
+                        const targetPos = nodePositions[targetAlias]
+
+                        if (sourcePos && targetPos) {
+                            const dx = targetPos.x - sourcePos.x
+                            const dy = targetPos.y - sourcePos.y
+                            const dist = Math.sqrt(dx * dx + dy * dy)
+                            const padding = 55
+
+                            if (dist > padding * 2) {
+                                const startX = sourcePos.x + dx * (padding / dist)
+                                const startY = sourcePos.y + dy * (padding / dist)
+                                const endX = sourcePos.x + dx * ((dist - padding) / dist)
+                                const endY = sourcePos.y + dy * ((dist - padding) / dist)
+
+                                edgesHtml += `<line class="edge" x1="${startX}" y1="${startY}" x2="${endX}" y2="${endY}" marker-end="url(#arrow)"></line>`
+                            }
+
+                            const midX = sourcePos.x + dx * 0.35
+                            const midY = sourcePos.y + dy * 0.35
+
+                            labelsHtml += `
+                                <div style="position: absolute; left: ${midX}px; top: ${midY}px; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.7); padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 500; color: #00ff80; border: 1px solid rgba(0,255,128,0.3); backdrop-filter: blur(4px); z-index: 6; pointer-events: none; white-space: nowrap;">
+                                    ${label}
+                                </div>
+                            `
+                        }
+                    })
+                }
+            })
+
+            edgesSvg.innerHTML = edgesHtml
+
+            world.innerHTML = edgesSvg.outerHTML + labelsHtml + nodesHtml
+
+
+        }
+
+
+        canvas.addEventListener("click", (e) => {
+
+            if (e.target.id === "graph-canvas" || e.target.id === "graph-world" || e.target.tagName === "svg") {
+                closeNodeDetails()
+            }
+        })
+
+        const sidebar = document.getElementById("node-details")
+
+        function showNodeDetails(encodedData, event) {
+
+            if (event) event.stopPropagation()
+
+            try {
+                const contact = JSON.parse(decodeURIComponent(encodedData))
+
+                document.getElementById("sidebar-avatar").innerText = contact.alias ? contact.alias.charAt(0).toUpperCase() : "?"
+                document.getElementById("sidebar-name").innerText = contact.alias || "Unknown"
+
+                document.getElementById("sidebar-pubkey").innerText = (contact.publicKey && contact.publicKey.trim() !== "") ? contact.publicKey : "None recorded."
+                document.getElementById("sidebar-note").innerText = (contact.note && contact.note.trim() !== "") ? contact.note : "No notes attached."
+
+                const connContainer = document.getElementById("sidebar-connections")
+                connContainer.innerHTML = ""
+                if (contact.connections && contact.connections.length > 0) {
+                    contact.connections.forEach(conn => {
+                        connContainer.innerHTML += `<div class="detail-value" style="margin-bottom: 0.5rem;"><b>${conn.source}:</b> ${conn.contact}</div>`
+                    })
+                } else {
+                    connContainer.innerHTML = `<div class="detail-value" style="color: var(--text-secondary);">No external links.</div>`
+                }
+
+                const relContainer = document.getElementById("sidebar-relations")
+                relContainer.innerHTML = ""
+                if (contact.relations && contact.relations.length > 0) {
+                    contact.relations.forEach(rel => {
+                        relContainer.innerHTML += `<div class="detail-value" style="margin-bottom: 0.5rem; background: rgba(0,255,128,0.05); color: #00ff80; border-color: rgba(0,255,128,0.2);"><b>${rel.label || "Linked"}:</b> ${rel.contact}</div>`
+                    })
+                } else {
+                    relContainer.innerHTML = `<div class="detail-value" style="color: var(--text-secondary);">No active relationships.</div>`
+                }
+
+
+                sidebar.classList.add("active")
+            } catch (e) {
+                console.error("Failed to parse node data", e)
+            }
+        }
+
+        function closeNodeDetails() {
+            sidebar.classList.remove("active")
+        }
+
+
+        window.addEventListener("load", fetchAndRenderGraph)
+
+    </script>
+</body>
+
+</html>
