@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://shadownw.vercel.app/sitemap.xml
