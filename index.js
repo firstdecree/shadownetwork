@@ -223,7 +223,7 @@
 
         // Core
         const userContacts = await contacts.find({ username: SHA512(cookieData.username) }).toArray()
-        const decryptedContacts = userContacts.map(c => decryptContact(cookieData.username, c))
+        const decryptedContacts = userContacts.map(c => decryptContact(cookieData.password, c))
         res.render("graph", { user: cookieData, contacts: decryptedContacts })
     })
 
@@ -240,7 +240,7 @@
         if (note && note.length > 1000) return res.send("0")
 
         const existingContacts = await contacts.find({ username: SHA512(cookieData.username) }).toArray()
-        const existingAliases = existingContacts.map((c) => decryptContact(cookieData.username, c).alias)
+        const existingAliases = existingContacts.map((c) => decryptContact(cookieData.password, c).alias)
         const safeAlias = xss.filterXSS(alias.replace(/[^a-zA-Z0-9]/g, "")).substring(0, 25)
 
         // Core
@@ -281,7 +281,7 @@
         if (note && note.length > 1000) return res.send("0")
 
         const existingContacts = await contacts.find({ username: SHA512(cookieData.username) }).toArray()
-        const existingAliases = existingContacts.map(c => decryptContact(cookieData.username, c).alias)
+        const existingAliases = existingContacts.map(c => decryptContact(cookieData.password, c).alias)
         const safeAlias = xss.filterXSS(alias.replace(/[^a-zA-Z0-9]/g, "")).substring(0, 25)
 
         /**
@@ -352,7 +352,7 @@
 
         // Core
         const userContacts = await contacts.find({ username: SHA512(cookieData.username) }).toArray()
-        const decryptedContacts = userContacts.map((c) => decryptContact(cookieData.username, c))
+        const decryptedContacts = userContacts.map((c) => decryptContact(cookieData.password, c))
         res.json({ user: cookieData, contacts: decryptedContacts })
     })
 
