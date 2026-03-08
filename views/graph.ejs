@@ -232,7 +232,8 @@
             display: flex;
             flex-direction: column;
             padding: 1.5rem 0.75rem;
-            z-index: 10;
+            transition: transform 0.3s ease;
+            z-index: 99;
         }
 
         .sidebar-menu {
@@ -413,9 +414,40 @@
             stroke-width: 1.5px;
         }
 
+        .mobile-menu-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .mobile-menu-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
         @media (max-width: 900px) {
+            .mobile-menu-btn {
+                display: flex;
+            }
+
             .sidebar {
-                display: none;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
             }
 
             .main-content {
@@ -511,6 +543,14 @@
         </a>
 
         <div class="navbar-right">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
             <div class="profile-menu-container" id="profileMenu">
                 <button class="profile-btn" aria-haspopup="true" aria-expanded="false"
                     onclick="toggleProfileMenu(event)">
@@ -536,7 +576,8 @@
                         </svg>
                         Logout
                     </a>
-                    <a href="/delete-account" class="dropdown-item danger">
+                    <a href="/delete-account" class="dropdown-item danger"
+                        onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="3 6 5 6 21 6"></polyline>
@@ -662,6 +703,10 @@
     </script>
 
     <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
 
         function toggleProfileMenu(e) {
             e.stopPropagation()
