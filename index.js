@@ -74,7 +74,7 @@
 
     // Configuration
     //* Express
-    web.use(helmet.xssFilter(), helmet.xDnsPrefetchControl(), helmet.xXssProtection(), helmet.hidePoweredBy(), helmet.frameguard({ action: "deny" }), helmet.noSniff(), helmet.hsts(), helmet.referrerPolicy())
+    web.use(helmet({ contentSecurityPolicy: false }))
     web.set("views", path.join(__dirname, "views"))
     web.use(compression({ level: 1 }))
     web.set("view engine", "ejs")
