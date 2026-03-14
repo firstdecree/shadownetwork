@@ -54,3 +54,7 @@ All other fields are encrypted using AES-256.
         </td>
     </tr>
 </table>
+
+<div align="center">
+  <sub>This project is distributed under <a href="/LICENSE"><b>MIT License</b></a></sub>
+</div>
